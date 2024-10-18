@@ -1,0 +1,1124 @@
+---
+title: I Have No Ram, and I Must Compute
+subtitle: Data Principles and Practices for the Thrifty
+format: clean-revealjs
+html-math-method:
+  method: mathjax
+  url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+author:
+  - name: Peyton Politewicz
+    orcid: 0009-0007-0335-9800
+    email: ppolitewicz@uci.edu/ppolitewicz@absnetwork.com
+    affiliations: University of California - Irvine & The Mortgage Office (ABS Inc.)
+date: last-modified
+---
+
+# Agenda {auto-animate=true}
+
+Overview of today's agenda:
+
+  - Setting a practical stage
+  - Small, manageable data [MBs and below]
+  - Medium, inconvenient data [GBs and above]
+  - Large, cumbersome data [Many, many GBs]
+
+---
+
+## Personal Background {auto-animate=true}
+
+  - Academic research
+  - Proofs-of-concept
+  - R&D and internal tool creation
+  
+![](img/nittanyai-mark.svg){height=150 fig-align="center"}
+![](img/uci.png){.absolute top=450 left=50 height="200"}
+![](img/lrn_logo.jpg){.absolute top=80 left=570 height="200"}
+![](img/the_mortgage_office_logo.jpg){.absolute top=450 left=550 height="200"}
+
+
+
+---
+
+## Problem Statement {auto-animate=true}
+
+Issues inherent to my experience:
+
+  - No money
+  - Minimal support
+  - Interaction with non-tech
+  - Moving targets
+  - Susceptibility to review
+  - Source control optional
+
+---
+
+## Problem Statement {auto-animate=true}
+
+Issues inherent to my experience:
+
+  - No money
+  - Minimal support
+  - Interaction with non-tech
+  - Moving targets
+  - Susceptibility to review
+  - Source control optional
+  
+  So... What scares me?
+
+---
+
+# The Dreaded df... {auto-animate=true}
+
+```{{r}}
+data = read_excel("drive-download-20240805T161830Z-001.xlsx")
+data = data %>%
+
+...
+
+temp = ...
+
+```
+
+```{{python}}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+df = pd.read_csv('nondescript_results.csv')
+
+...
+
+temp = ...
+```
+
+---
+
+## When Good Comments are not Enough {auto-animate=true}
+
+  - Uptick in calls for reproducibility!
+  
+  ![](img/stanford.webp){height=200 fig-align="center"}
+
+---
+
+## When Good Comments are not Enough {auto-animate=true}
+
+  - Uptick in calls for reproducibility!
+
+  - Your code and your work outlives your tenure
+    ("It shouldn't be too bad...")
+    
+![](img/this_is_fine.jpg){height=200 fig-align="center"}
+
+---
+
+## When Good Comments are not Enough {auto-animate=true}
+
+  - Uptick in calls for reproducibility!
+
+  - Your code and your work outlives your tenure
+    ("It shouldn't be too bad...")
+
+  - Data [esp. EHR] is *frequently changing*!
+
+![](img/all-of-us.png){height=200 fig-align="center"}
+![](img/trinetx.png){height=130 fig-align="right"}
+
+---
+
+## Practical Assumptions {auto-animate=true}
+
+My advice hinges upon adoption of the following:
+
+  - **Timestamp** (or draft-mark) your source datasets and projects.
+
+---
+
+## Practical Assumptions {auto-animate=true}
+
+My advice hinges upon adoption of the following:
+
+  - **Timestamp** (or draft-mark) your source datasets and projects.
+
+  - **Preserve** original data, cleaned/partitioned subsets, models, and figures that are used in deliverables.
+
+---
+
+## Practical Assumptions {auto-animate=true}
+
+My advice hinges upon adoption of the following:
+
+  - **Timestamp** (or draft-mark) your source datasets and projects.
+
+  - **Preserve** original data, cleaned/partitioned subsets, models, and figures that are used in deliverables.
+  
+  - **Consider**, in a project regarding middle school [5th-9th grade] physical fitness across California:
+      - dataFifthGrNorcal (data - strata 1, strata 2)
+
+---
+
+## Practical Assumptions {auto-animate=true}
+
+My advice hinges upon adoption of the following:
+
+  - **Timestamp** (or draft-mark) your source datasets and projects.
+
+  - **Preserve** original data, cleaned/partitioned subsets, models, and figures that are used in deliverables.
+  
+  - **Consider**, in a project regarding middle school [5th-9th grade] physical fitness across California:
+      - dataFifthGrNorcal (data - strata 1, strata 2)
+      - mdlLogHFZByGrade (model - type, response, strata)
+
+---
+
+## Practical Assumptions {auto-animate=true}
+
+My advice hinges upon adoption of the following:
+
+  - **Timestamp** (or draft-mark) your source datasets and projects.
+
+  - **Preserve** original data, cleaned/partitioned subsets, models, and figures that are used in deliverables.
+  
+  - **Consider**, in a project regarding middle school [5th-9th grade] physical fitness across California:
+      - dataFifthGrNorcal (data - strata 1, strata 2)
+      - mdlLogHFZByGrade (model - type, response, strata)
+      - figACBoxPlotByADI (figure - response, style, strata)
+
+---
+
+## Practical Assumptions {auto-animate=true}
+
+My advice hinges upon adoption of the following:
+
+  - **Timestamp** (or draft-mark) your source datasets and projects.
+
+  - **Preserve** original data, cleaned/partitioned subsets, models, and figures that are used in deliverables.
+  
+  - **Consider**, in a project regarding middle school [5th-9th grade] physical fitness across California:
+      - dataFifthGrNorcal (data - strata 1, strata 2)
+      - mdlLogHFZByGrade (model - type, response, strata)
+      - figACBoxPlotByADI (figure - response, style, strata)
+    
+  - A knowledgeable data scientist can trace your steps but a little effort up-front makes many details immediately clear.
+
+---
+
+## Defining Completeness {auto-animate=true}
+
+An optimal end-of-project package includes:
+
+  - Interpretable code
+
+---
+
+## Defining Completeness {auto-animate=true}
+
+An optimal end-of-project package includes:
+
+  - Interpretable code
+
+  - The original dataset and subsets used
+
+---
+
+## Defining Completeness {auto-animate=true}
+
+An optimal end-of-project package includes:
+
+  - Interpretable code
+
+  - The original dataset and subsets used
+
+  - A project or script at 'run-and-go' status
+  
+![](img/nevergiveup.gif){height=300 fig-align="center"}
+
+---
+
+## Small Datasets {auto-animate=true}
+
+So, what are best practices for **small** datasets, meaning:
+
+Data that's small enough where we can reasonably fit an infinite number of iterations, subsets, and models in memory?
+
+---
+
+## Small Datasets {auto-animate=true}
+
+So, what are best practices for **small** datasets, meaning:
+
+Data that's small enough where we can reasonably fit an infinite number of iterations, subsets, and models in memory?
+
+Basically, everything above!
+
+---
+
+## Small Datasets {auto-animate=true}
+
+In addition to these principles, these tools are what [almost] everyone else is hoping to see:
+
+![](img/tidyverse.png){height=200 fig-align="center"}
+
+---
+
+## Small Datasets {auto-animate=true}
+
+In addition to these principles, these tools are what [almost] everyone else is hoping to see:
+
+![](img/tidyverse.png){height=200 fig-align="center"}
+
+![](img/tibble.png){.absolute top=335 left=355 height="200"}
+
+
+---
+
+## Small Datasets {auto-animate=true}
+
+In addition to these principles, these tools are what [almost] everyone else is hoping to see:
+
+![](img/tidyverse.png){height=200 fig-align="center"}
+
+![](img/tibble.png){.absolute top=335 left=355 height="200"}
+
+![](img/dplyr.png){.absolute top=335 left=525 height="200"}
+
+
+---
+
+## Tidyverse {auto-animate=true}
+
+The components of the tidyverse have emerged as R users' lingua franca.
+
+![](img/pipe.png){height=200 fig-align="center"}
+
+---
+
+## Tidyverse {auto-animate=true}
+
+The components of the tidyverse have emerged as R users' lingua franca.
+
+Curated by Posit and led by COPSS-winning kiwi Hadley Wickham.
+
+![](img/pipe.png){height=200 fig-align="center"}
+
+---
+
+## Tidyverse {auto-animate=true}
+
+The components of the tidyverse have emerged as R users' lingua franca.
+
+Curated by Posit and led by COPSS-winning kiwi Hadley Wickham.
+
+Dplyr gives you access to tons of convenient, SQL-esque operations which absolutely outfox R's base functions for data manipulation.
+
+![](img/pipe.png){height=200 fig-align="center"}
+
+---
+
+# Part 2: Medium-size {auto-animate=true}
+
+Now, we'll start getting less practical and more technical.
+
+I would categorize this shift upward as when many people start having to take their data 'seriously'.
+
+Subsetting and wrangling your data adopts a technical layer on top of an experimental design/logical layer.
+
+---
+
+## Back to Definitions {auto-animate=true}
+
+I've handwaved away the number demarcating 'medium-sized' as a few GBs, but...
+
+It's really any size where you can't be absolutely greedy with your memory and computational power anymore.
+
+---
+
+## Back to Definitions {auto-animate=true}
+
+I've handwaved away the number demarcating 'medium-sized' as a few GBs, but...
+
+It's really any size where you can't be absolutely greedy with your memory and computational power anymore.
+
+Thus, this is a moving target, dependent on your methods and your resources [e.g. structural equation models, like mixed effects models; anything Bayesian; etc...]
+
+![](img/stan.png){height=200 fig-align="center"}
+
+---
+
+## New Tools {auto-animate=true}
+
+We'll continue using many facets of dplyr and tidyverse, but we're going to need some new tools.
+
+We also ought to consider our data differently depending on whether we're trying to *query* it, or trying to *model* with it.
+
+---
+
+## New Tools {auto-animate=true}
+
+We'll continue using many facets of dplyr and tidyverse, but we're going to need some new tools.
+
+We also ought to consider our data differently depending on whether we're trying to *query* it, or trying to *model* with it.
+
+To those ends, respectively, I introduce:
+
+![](img/arrow.png){height=170 fig-align="left"}
+![](img/datatable.png){height=200 fig-align="right"}
+
+
+---
+
+## New Tools {auto-animate=true}
+
+We eschew the humble and ubiquitous tibble from tidyverse and replace it with two new items of power:
+
+**Apache Arrow** for data storage, glimpses, and creating subsets.
+
+![](img/arrow.png){height=170 fig-align="left"}
+![](img/datatable.png){height=200 fig-align="right"}
+
+---
+
+## New Tools {auto-animate=true}
+
+We eschew the humble and ubiquitous tibble from tidyverse and replace it with two new items of power:
+
+**Apache Arrow** for data storage, glimpses, and creating subsets.
+
+**data.table**, which is lean and fast but not *quite* as lean and fast as Arrow. However, data.table 'extends' R's data.frame, so anywhere you see an R package accepting a data.frame object, you can sub in a data.table.
+
+![](img/arrow.png){height=170 fig-align="left"}
+![](img/datatable.png){height=200 fig-align="right"}
+
+---
+
+## New Tools {auto-animate=true}
+
+We will leverage this one-two punch to quickly assess and manipulate our data, then store it as tidily as possible so we can maintain our good archival breadcrumbs.
+
+![](img/arrow.png){height=170 fig-align="left"}
+![](img/datatable.png){height=200 fig-align="right"}
+
+---
+
+## MORE... New... Tools? {auto-animate=true}
+
+We're also going to see a number of data sources transition away from the notorious .csv.
+
+Instead, you'll see data stored in other formats - especially Apache Parquet.
+
+![](img/parquet.svg){height=140 fig-align="center"}
+
+---
+
+## MORE... New... Tools? {auto-animate=true}
+
+We're also going to see a number of data sources transition away from the notorious .csv.
+
+Instead, you'll see data stored in other formats - especially Apache Parquet.
+
+This is going to be radically smaller and faster to access than a comparable .csv - some of my work has shrunk by a **factor of 10**.
+
+![](img/parquet.svg){height=140 fig-align="center"}
+
+---
+
+## New First Steps {auto-animate=true}
+
+  - Download data
+
+```{{r}}
+
+dir.create("data", showWarnings = FALSE)
+
+curl::multi_download(
+  "https://r4ds.s3.us-west-2.amazonaws.com/seattle-library-checkouts.csv",
+  "data/seattle-library-checkouts.csv",
+  resume = TRUE
+)
+
+```
+
+---
+
+## New First Steps {auto-animate=true}
+
+  - Download data
+  - Import into an *arrow table* instead of a data frame or tibble
+
+```{{r}}
+
+libFull_arr <- read_csv_arrow("data/seattle-library-checkouts.csv", as_data_frame = FALSE)
+
+```
+
+
+---
+
+## New First Steps {auto-animate=true}
+
+  - Download data
+  - Import into an *arrow table* instead of a data frame or tibble
+  - Utilize dplyr for glimpses, subsets, EDA
+  
+  Many dplyr verbs work with arrow straight away.
+
+  The 'collect' line is what actually prompts arrow to execute the query above and return data to the R environment.
+
+```{{r}}
+
+libBookCheckouts2018 <- libFull_arr |> 
+  filter(CheckoutYear >= 2018, MaterialType == "BOOK") |>
+  group_by(CheckoutYear, CheckoutMonth) |>
+  summarize(TotalCheckouts = sum(Checkouts)) |>
+  arrange(CheckoutYear, CheckoutMonth) |>
+  collect()
+
+```
+  
+---
+
+## New First Steps {auto-animate=true}
+
+  - Download data
+  - Import into an *arrow table* instead of a data frame or tibble
+  - Utilize dplyr for glimpses, subsets, EDA
+  - Collect subsets as required into data.tables
+
+```{{r}}
+
+libBookCheckouts2018 <- data.table (
+  libFull_arr |> 
+  filter(CheckoutYear >= 2018, MaterialType == "BOOK") |>
+  group_by(CheckoutYear, CheckoutMonth) |>
+  summarize(TotalCheckouts = sum(Checkouts)) |>
+  arrange(CheckoutYear, CheckoutMonth) |>
+  collect()
+  )
+
+```
+  
+---
+
+## New First Steps {auto-animate=true}
+
+  - Download data
+  - Import into an *arrow table* instead of a data frame or tibble
+  - Utilize dplyr for glimpses, subsets, EDA
+  - Collect subsets as required into data.tables
+  - Unload the original dataset if necessary
+  
+```{{r}}
+saveRDS(libFull_arr, "libFull.RData")
+rm(libFull_arr)
+
+```
+  
+---
+
+## New First Steps {auto-animate=true}
+
+  - Download data
+  - Import into an *arrow table* instead of a data frame or tibble
+  - Utilize dplyr for glimpses, subsets, EDA
+  - Collect subsets as required into data.tables
+  - Unload the original dataset if necessary
+  - Off to the races!
+  
+
+```{{r}}
+
+checkoutsRF <- ranger(Checkouts ~ Publisher + Subject1 + Subject2 + Subject3 + Subject4, data = libBookCheckouts2018, write.forest = TRUE)
+
+```
+  
+
+---
+
+## Functional Impact {auto-animate=true}
+
+  - This should be simultaneously effective and tractable.
+  - Still using a procedural, all-in-one pipeline that you can probably keep in your R script.
+  - Datasets to practice with:
+  
+![](img/nyc.svg){height=120 fig-align="left"}
+![](img/ipumsUSA.png){height=120 fig-align="center"}
+![](img/seattle.png){height=120 fig-align="right"}
+
+
+---
+
+# Part 3: Large Data {auto-animate=true}
+
+Large data is going to skirt the limitations of what's possible without more resources [cloud, HPC, etc.]...
+
+'Bigger than memory' is something you'll start hearing *lots*.
+
+---
+
+# Part 3: Large Data {auto-animate=true}
+
+Large data is going to skirt the limitations of what's possible without more resources [cloud, HPC, etc.]...
+
+'Bigger than memory' is something you'll start hearing *lots*.
+
+The paradigm shift here is a definitive demarcation between your data science workspace and where data is stored.
+
+If you have more experience or work in a more robust environment you already know these lines are blurred, but let me cook!!!
+
+---
+
+## Case Study Setup {auto-animate=true}
+
+It's possible to go through life and data science at large without ever running into data this size, so...
+
+How did I find myself here?
+
+---
+
+## Observational Studies using EHR {auto-animate=true}
+
+Joined UCI CSC in Nov. 2023 because they had repeated requests for massive data projects.
+
+First on my plate was a CKD/Diabetes comorbidity study based on data harvested from TriNetX.
+
+![](img/trinetx.png){height=130 fig-align="center"}
+
+---
+
+## TriNetX CKD/Diabetes Study {auto-animate=true}
+
+Very 'compsci' versus 'stats' datasets; a few huge tables to be joined with patient and encounter keys, requiring substantial data engineering to arrange for analysis.
+
+Colleagues are 'old-school' backend engineers and traditional statisticians.
+
+They were given hundreds of GBs of data and everyone fainted.
+
+---
+
+## TriNetX CKD/Diabetes Study {auto-animate=true}
+
+Very 'compsci' versus 'stats' datasets; a few huge tables to be joined with patient and encounter keys, requiring substantial data engineering to arrange for analysis.
+
+Colleagues are 'old-school' backend engineers and traditional statisticians.
+
+They were given hundreds of GBs of data and everyone fainted.
+
+![](img/fainting.gif){fig-align="center"}
+
+---
+
+## TriNetX CKD/Diabetes Study {auto-animate=true}
+
+Total was around 350 GB of raw .csvs.
+
+Initial approach used rsql to chunk out portions of these tables, as big as memory would allow, and query the subsets.
+
+Lot of problems here - because of how records were stored, my predecessor had to build all these intra-chunk checks to make sure all records of relevant patients were collected and arranged longitudinally, etc... Ghastly!
+
+Processing took longer, and longer - overnight, in some cases.
+
+How did we escape?
+
+---
+
+## DuckDB and Managing Massive Data {auto-animate=true}
+
+**DuckDB** is a DBMS architecture that's entirely focused on speed and size efficiency.
+
+It handles bigger-than-memory queries like a *champ*.
+
+![](img/duckdb.svg){height=130 fig-align="center"}
+
+---
+
+## DuckDB and Managing Massive Data {auto-animate=true}
+
+**DuckDB** is a DBMS architecture that's entirely focused on speed and size efficiency.
+
+It handles bigger-than-memory queries like a *champ*.
+
+Since I was preparing the datasets for others to analyze in non-R languages, I found it [and continue to find it] helpful to completely differentiate the work of creating subsets from working in R on the analysis.
+
+![](img/duckdb.svg){height=130 fig-align="center"}
+
+---
+
+## DuckDB and Managing Massive Data {auto-animate=true}
+
+One way of utilizing DuckDB is *straight* from the command line.
+
+![](img/duckdbCLI.png){fig-align="center"}
+
+
+---
+
+## DuckDB and Managing Massive Data {auto-animate=true}
+
+One way of utilizing DuckDB is *straight* from the command line.
+
+This is how I learned, so this is my preference - it gives you a little bit of 'hackerman' flair, feels generally impregnable to managers peeking over your shoulder, and comes off so arcane that it's impressive per-se.
+
+![](img/hackerman.jpg){fig-align="center"}
+
+
+---
+
+## DuckDB and Managing Massive Data {auto-animate=true}
+
+One way of utilizing DuckDB is *straight* from the command line.
+
+This is how I learned, so this is my preference - it gives you a little bit of 'hackerman' flair, feels generally impregnable to managers peeking over your shoulder, and comes off so arcane that it's impressive per-se.
+
+The only downside [depending on who you ask], is that you have to learn ddb's brand of sql:
+![](img/duckdbcli2.png){fig-align="center"}
+
+---
+
+## DuckDB: Metrics {auto-animate=true}
+
+Returning to our case study, remember that we had nearly 350 GB of data in .csv format.
+
+Bringing those over, creating a duckdb database object locally, and reading those in as separate tables shrunk them down to ~31 GB.
+
+Shrinking your storage need by more than a factor of 10? Pretty cool...
+
+On top of that, queries, joins and other manipulation of the data now only took a minute or few, not hours or more.
+
+![](img/duckdbCLIimport.png){fig-align="center"}
+
+---
+
+## DuckDB: Back to R {auto-animate=true}
+
+As you might imagine, DuckDB makes it super easy to export tables to our newly-discovered parquet format:
+
+![](img/duckdbCLIexport.png){fig-align="center"}
+
+---
+
+## DuckDB: Back to R {auto-animate=true}
+
+As you might imagine, DuckDB makes it super easy to export tables to our newly-discovered parquet format:
+
+![](img/duckdbCLIexport.png){fig-align="center"}
+
+Heck, we can even export subsets or the results of queries instead of entire tables:
+
+![](img/duckdbCLIexport2.png){fig-align="center"}
+
+---
+
+## DuckDB: Back to R {auto-animate=true}
+
+As you may notice, now we've returned to our previous layer of complexity:
+
+---
+
+## DuckDB: Back to R {auto-animate=true}
+
+As you may notice, now we've returned to our previous layer of complexity:
+
+![](img/arrow.png){height=170 fig-align="left"}
+![](img/datatable.png){height=200 fig-align="right"}
+
+---
+
+# Bonuses: Meeting in the Middle {auto-animate=true}
+
+I'll be the first to admit these are relatively hacky...
+
+Other members of RUG can attest to more comprehensive, robust methods.
+
+To hint at what's possible once you're more comfortable in this space, there are two small addenda.
+
+---
+
+## Leapfrogging {auto-animate=true}
+
+As you become more comfortable working with bigger datasets, or you own the entirety of the data science process, there's less and less reason to segregate the data wrangling component from the rest of your work.
+
+---
+
+## Leapfrogging {auto-animate=true}
+
+As you become more comfortable working with bigger datasets, or you own the entirety of the data science process, there's less and less reason to segregate the data wrangling component from the rest of your work.
+
+DuckDB and Arrow offer ways to connect to databases so you can work more directly on bigger-than-memory sets.
+
+---
+
+## Leapfrogging {auto-animate=true}
+
+```{{r}}
+library(duckdb)
+
+con <- dbConnect(duckdb(), dbdir = "fullData15Oct24.duckdb", read_only = FALSE)
+
+# the con object is a channel for R's communication with the database.
+```
+
+![](img/duckdb.svg){height=80 fig-align="center"}
+
+
+---
+
+## Leapfrogging {auto-animate=true}
+
+```{{r}}
+library(duckdb)
+
+con <- dbConnect(duckdb(), dbdir = "fullData15Oct24.duckdb", read_only = FALSE)
+
+# the con object is a channel for R's communication with the database.
+
+dbExecute(con, "CREATE TABLE thisYear AS SELECT * FROM fullData WHERE Year == 2024" )
+
+# dbExecute is used for operations that don't expect a returned value.
+
+# as you can see, we're just directly injecting strings of SQL.
+```
+
+![](img/duckdb.svg){height=80 fig-align="center"}
+
+---
+
+## Leapfrogging {auto-animate=true}
+
+```{{r}}
+library(duckdb)
+
+con <- dbConnect(duckdb(), dbdir = "fullData15Oct24.duckdb", read_only = FALSE)
+
+# the con object is a channel for R's communication with the database.
+
+dbExecute(con, "CREATE TABLE thisYear AS SELECT * FROM fullData WHERE Year == 2024")
+
+# dbExecute is used for operations that don't expect a returned value.
+
+# as you can see, we're just directly injecting strings of SQL.
+
+dataSales2024 <- dbGetQuery(con, "SELECT employee, accountNo, accountVal FROM thisYear")
+
+# dbGetQuery is for queries that expect a response...
+```
+
+![](img/duckdb.svg){height=80 fig-align="center"}
+
+---
+
+## Leapfrogging {auto-animate=true}
+
+There are **layers** to this, including efficiently registering views and working dplyr into your queries:
+
+
+```{{r}}
+
+library("duckdb")
+library("dplyr")
+con <- dbConnect(duckdb())
+duckdb_register(con, "flights", nycflights13::flights)
+
+tbl(con, "flights") |>
+  group_by(dest) |>
+  summarise(delay = mean(dep_time, na.rm = TRUE)) |>
+  collect()
+  
+```
+
+
+Check the references!
+
+![](img/duckdb.svg){height=80 fig-align="center"}
+
+---
+
+## Leapfrogging {auto-animate=true}
+
+Arrow has similar functionality, where you can register a directory as a dataset and operate with it on-disk instead of in-memory:
+
+```{{r}}
+
+ds <- open_dataset("nyc-taxi")
+  
+```
+
+Even better, Arrow is also able to integrate with dplyr verbs instead of bringing back SQL.
+
+![](img/arrow.png){height=80 fig-align="center"}
+
+---
+
+## Leapfrogging {auto-animate=true}
+
+Let's look at some NYC taxi data, then find median tip percentages for fares over $100 in 2015, broken down by number of passengers:
+
+```{{r}}
+
+ds <- open_dataset("nyc-taxi")
+
+ds %>%
+  filter(total_amount > 100, year == 2015) %>%
+  select(tip_amount, total_amount, passenger_count) %>%
+  group_by(passenger_count) %>%
+  collect() %>%
+  summarize(
+    tip_pct = median(100 * tip_amount / total_amount),
+    n = n()
+  ) %>%
+  print()
+  
+```
+
+![](img/arrow.png){height=80 fig-align="center"}
+
+---
+
+## Leapfrogging {auto-animate=true}
+
+```{{r}}
+
+ds <- open_dataset("nyc-taxi")
+
+system.time(
+ds %>%
+  filter(total_amount > 100, year == 2015) %>%
+  select(tip_amount, total_amount, passenger_count) %>%
+  group_by(passenger_count) %>%
+  collect() %>%
+  summarize(
+    tip_pct = median(100 * tip_amount / total_amount),
+    n = n()
+  ) %>%
+  print()
+)
+
+## 
+## # A tibble: 10 x 3
+##    passenger_count tip_pct      n
+##              <int>   <dbl>  <int>
+##  1               0    9.84    380
+##  2               1   16.7  143087
+##  3               2   16.6   34418
+##  4               3   14.4    8922
+##  5               4   11.4    4771
+##  6               5   16.7    5806
+##  7               6   16.7    3338
+##  8               7   16.7      11
+##  9               8   16.7      32
+## 10               9   16.7      42
+## 
+##    user  system elapsed
+##   4.436   1.012   1.402
+
+```
+
+![](img/arrow.png){height=80 fig-align="center"}
+
+---
+
+## Sampling and Prediction Testing with Caret {auto-animate=true}
+
+Caret's one of my favorite packages to utilize here, and one of the things that keeps me coming back to R over python.
+
+Caret is a hugely robust package that provides a suite of functions for Classification And REgression Training, analogous to the tidymodels component of the tidyverse.
+
+![](img/caret.jpeg){height=170 fig-align="left"}
+![](img/tidymodels.png){height=170 fig-align="right"}
+
+---
+
+## Sampling and Prediction Testing with Caret {auto-animate=true}
+
+Say your data is immense, but it's also so immense you don't really need all of it to create a reasonable model (CLT holds at around 30, after all)...
+
+
+---
+
+## Sampling and Prediction Testing with Caret {auto-animate=true}
+
+Say your data is immense, but it's also so immense you don't really need all of it to create a reasonable model (CLT holds at around 30, after all)...
+
+It's totally reasonable to train on a small subset of your data, then use something like arrow to use predict() to test it nimbly on the remainder of your data.
+
+---
+
+## Sampling and Prediction Testing with Caret {auto-animate=true}
+
+Say your data is immense, but it's also so immense you don't really need all of it to create a reasonable model (CLT holds at around 30, after all)...
+
+It's totally reasonable to train on a small subset of your data, then use something like arrow to use predict() to test it nimbly on the remainder of your data.
+
+Something I'm consistently cognizant of here (or in any cross-validation scheme) is even weighting and stratification.
+
+Say your response of interest is binary, and pretty uneven; 70% of class 1, 30% of class 2.
+
+---
+
+## Sampling and Prediction Testing with Caret {auto-animate=true}
+
+Say your response of interest is binary, and pretty uneven; 70% of class 1, 30% of class 2.
+
+Caret handles this!
+
+```{{r}}
+
+library(caret)
+
+trainIndex <- createDataPartition(data$Response,
+                                  p = .9, 
+                                  list = FALSE, 
+                                  times = 1)
+```
+
+---
+
+## Sampling and Prediction Testing with Caret {auto-animate=true}
+
+Say your response of interest is binary, and pretty uneven; 70% of class 1, 30% of class 2.
+
+Caret handles this!
+
+```{{r}}
+
+lbrary(caret)
+
+idxTrain <- createDataPartition(data$Response,
+                                  p = .1, 
+                                  list = FALSE, 
+                                  times = 1)
+                                  
+dataTrain <- data[idxTrain,]
+```
+
+Here, caret is giving us a 10% subset [*p* above] of the data that maintains the 70/30 weight of our response factor.
+
+---
+
+## Sampling and Prediction Testing with Caret {auto-animate=true}
+
+Here, caret is giving us a 10% subset [*p* above] of the data that maintains the 70/30 weight of our response factor.
+
+We can take our subset and train on it...
+
+```{{r}}
+
+lbrary(caret)
+
+idxTrain <- createDataPartition(data$Response,
+                                  p = .1, 
+                                  list = FALSE, 
+                                  times = 1)
+                                  
+dataTrain <- data[idxTrain,]
+
+
+mdl <- glm(Response ~ predictor1 + predictor2 + predictor3, data = dataTrain, family = "binomial")
+```
+
+---
+
+## Sampling and Prediction Testing with Caret {auto-animate=true}
+
+And then, use arrow to manually calculate accuracy by interweaving predict across batches:
+
+```{{r}}
+
+mdl <- glm(Response ~ predictor1 + predictor2 + predictor3, data = dataTrain, family = "binomial")
+
+fullData %>%
+  filter(year == 2024) %>%
+  select(Response, predictor1, predictor2, predictor3) %>%
+  map_batches(function(batch) {
+    batch %>%
+      as.data.frame() %>%
+      mutate(predictedResponse = predict(mdl, newdata = .)) %>%
+      summarize(correct_predictions = sum(Response == predictedResponse),
+                n_partial = n()) %>%
+      as_record_batch()
+  }) %>%
+  summarize(accuracy = sum(correct_predictions) / sum(n_partial)) %>%
+  pull(accuracy)
+  
+```
+
+---
+
+# Wrap Up! {auto-animate=true}
+
+Hopefully this helps you conceptualize a path away from where many of us begin with tutorials, academia, bootcamps or kaggle projects into working with more and more complicated data science. 
+
+Personally, having started from such peculiar roots, I feel absolutely spoiled for choice when it comes to project kickoffs.
+
+I'll close out with the myriad resources I referenced while putting this together.
+
+---
+
+## References: Tidyverse 
+
+[Tidyverse Homepage](https://www.tidyverse.org/)
+
+[dplyr](https://dplyr.tidyverse.org/)
+
+[readr](https://readr.tidyverse.org/)
+
+[tibble](https://tibble.tidyverse.org/)
+
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+[tidymodels](https://www.tidymodels.org/)
+
+
+![](img/tidymodels.png){height=170 fig-align="center"}
+
+---
+
+## References: Arrow 
+
+[Arrow R Homepage](https://arrow.apache.org/docs/r/)
+
+[Arrow Cookbook](https://arrow.apache.org/cookbook/r/index.html)
+
+[R4DS Chapter on Arrow](https://r4ds.hadley.nz/arrow)
+
+[Arrow for Data Witches](https://blog.djnavarro.net/posts/2021-11-19_starting-apache-arrow-in-r/)
+
+[Arrow and dplyr](https://arrow.apache.org/docs/r/articles/data_wrangling.html)
+
+[Arrow and multi-file datasets](https://arrow.apache.org/docs/r/articles/dataset.html)
+
+![](img/arrow.png){height=170 fig-align="center"}
+
+---
+
+## References: DuckDB
+
+[DuckDB Home](https://duckdb.org/)
+
+[DuckDB Documentation](https://duckdb.org/docs/)
+
+[Duckplyr](https://github.com/tidyverse/duckplyr)
+
+[DuckDB R API](https://duckdb.org/docs/api/r.html)
+
+![](img/duckdb.svg){height=170 fig-align="center"}
+
+---
+
+## References: Datasets/Other
+
+[data.table CRAN Reference](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html)
+
+[data.table Wiki](https://rdatatable.gitlab.io/data.table/)
+
+[NYC Taxi Data](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)
+
+[Seattle Library Checkouts](https://data.seattle.gov/Community-and-Culture/Checkouts-by-Title/tmmm-ytt6/about_data)
+
+[Universita of Minnesota IPUMS](https://www.ipums.org/)
+
+[caret reference](https://cran.r-project.org/web/packages/caret/vignettes/caret.html)
+
+[caret cookbook](https://topepo.github.io/caret/index.html)
+
+[Multivariate stratification with tidyverse](https://stackoverflow.com/questions/54566428/caret-creating-stratified-data-sets-based-on-several-variables)
+
